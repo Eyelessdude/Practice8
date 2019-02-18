@@ -1,0 +1,52 @@
+package ua.nure.dudka.practice8.db;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Properties;
+
+public class DBUtils {
+    private static final String FILE_NAME = "app.properties";
+
+    public static void close(AutoCloseable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void rollback(Connection connection) {
+        if (connection != null) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void adjustConnectionForTransaction(Connection connection) throws SQLException {
+        connection.setAutoCommit(false);
+        connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+    }
+
+    public static String getProperty(String property) {
+        Properties propertiesInFile = new Properties();
+        String result = null;
+
+        try (InputStream input = new FileInputStream(FILE_NAME)) {
+            propertiesInFile.load(input);
+
+            result = propertiesInFile.getProperty(property);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+}

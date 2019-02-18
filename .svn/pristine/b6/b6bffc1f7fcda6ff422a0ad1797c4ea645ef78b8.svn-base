@@ -1,0 +1,1 @@
+connection.url=jdbc:mysql://localhost/practice_8_db?user=bohdan&password=qwerty
